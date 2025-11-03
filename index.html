@@ -4,30 +4,35 @@
   <meta charset="UTF-8">
   <title>比々多ジュニアバレーボールクラブ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="比々多ジュニアバレーボールクラブの公式サイトです。神奈川県伊勢原市を拠点に活動する小学生バレーボールチーム。見学・体験いつでもOK。">
+  <meta name="description" content="比々多ジュニアバレーボールクラブの公式サイト。神奈川県伊勢原市を拠点に活動する小学生バレーボールチームです。見学・体験いつでもOK！">
   <style>
     :root {
-      --accent: #0f73ff;
-      --accent-light: rgba(15,115,255,0.12);
-      --bg: #f1f3f7;
-      --card: #ffffff;
-      --text: #1f2933;
+      --blue: #0f73ff;
+      --blue-dark: #0844aa;
+      --blue-light: #e8f1ff;
+      --text: #1c1f26;
+      --card-bg: #ffffff;
     }
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
-      margin: 0;
-      background: radial-gradient(circle at top, #ffffff 0%, #eef3ff 40%, #f1f3f7 100%);
+      font-family: "Noto Sans JP", "Hiragino Sans", system-ui, sans-serif;
+      background: linear-gradient(to bottom right, var(--blue-light), #ffffff);
       color: var(--text);
+      line-height: 1.7;
     }
+
+    /* ==== ヘッダー ==== */
     header.site-header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(15,115,255,0.05);
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(15,115,255,0.1);
+      box-shadow: 0 2px 6px rgba(15,115,255,0.05);
     }
+
     .nav-container {
       max-width: 1080px;
       margin: 0 auto;
@@ -36,31 +41,110 @@
       justify-content: space-between;
       padding: .7rem 1rem;
     }
+
     .logo {
       font-weight: 700;
-      letter-spacing: .05em;
+      font-size: 1rem;
       display: flex;
       align-items: center;
-      gap: .4rem;
+      gap: .5rem;
+      letter-spacing: .03em;
+      color: var(--blue-dark);
     }
+
     .logo-circle {
       width: 28px; height: 28px;
-      border-radius: 9999px;
-      background: linear-gradient(135deg, #0f73ff 0%, #26b8ff 100%);
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #33aaff);
       display: grid; place-items: center;
-      color: #fff;
-      font-size: .65rem;
-      font-weight: 700;
+      color: #fff; font-size: .65rem; font-weight: 700;
+      box-shadow: 0 0 8px rgba(15,115,255,0.3);
     }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+
     nav a {
-      margin-left: 1rem;
+      color: var(--text);
       text-decoration: none;
-      color: #3b4a5a;
-      font-size: .9rem;
+      font-weight: 500;
+      transition: color 0.2s;
     }
+
     nav a:hover {
-      color: #0f73ff;
+      color: var(--blue);
     }
+
+    /* ==== ハンバーガーボタン ==== */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      background: rgba(15,115,255,0.1);
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s;
+    }
+
+    .menu-toggle span {
+      position: absolute;
+      height: 3px;
+      width: 60%;
+      left: 20%;
+      background: var(--blue);
+      border-radius: 2px;
+      transition: all 0.4s ease;
+    }
+
+    .menu-toggle span:nth-child(1) { top: 9px; }
+    .menu-toggle span:nth-child(2) { top: 15px; }
+    .menu-toggle span:nth-child(3) { top: 21px; }
+
+    .menu-toggle.open span:nth-child(1) {
+      transform: rotate(45deg);
+      top: 15px;
+    }
+    .menu-toggle.open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg);
+      top: 15px;
+    }
+
+    /* ==== モバイルメニュー ==== */
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+    .mobile-nav.show {
+      display: flex;
+      max-height: 400px;
+      padding: 1rem 0;
+    }
+    .mobile-nav a {
+      text-decoration: none;
+      color: var(--blue-dark);
+      font-weight: 600;
+      padding: .6rem 0;
+      width: 100%;
+      text-align: center;
+    }
+    .mobile-nav a:hover {
+      background: var(--blue-light);
+    }
+
+    /* ==== ヒーロー ==== */
     .hero {
       max-width: 1080px;
       margin: 1.5rem auto 1rem;
@@ -73,6 +157,7 @@
     .hero-text h1 {
       font-size: clamp(1.7rem, 3.2vw, 2.5rem);
       margin-bottom: .6rem;
+      color: var(--blue-dark);
     }
     .hero-text p {
       margin-bottom: 1.1rem;
@@ -84,26 +169,26 @@
       flex-wrap: wrap;
     }
     .btn-primary {
-      background: #0f73ff;
+      background: var(--blue);
       color: #fff;
       border: none;
       padding: .6rem 1.1rem;
       border-radius: .6rem;
       font-weight: 600;
       text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
+    }
+    .btn-primary:hover {
+      background: var(--blue-dark);
     }
     .btn-secondary {
       background: rgba(15,115,255,0.1);
-      color: #0f73ff;
-      border: none;
+      color: var(--blue);
       padding: .6rem 1.1rem;
       border-radius: .6rem;
       text-decoration: none;
       font-weight: 600;
     }
+
     .hero-image {
       background: radial-gradient(circle at top, #b0d6ff 0%, #0f73ff 40%, #022b56 100%);
       border-radius: 1.3rem;
@@ -131,6 +216,8 @@
       padding: .4rem .7rem;
       font-size: .7rem;
     }
+
+    /* ==== メイン ==== */
     main {
       max-width: 1080px;
       margin: 0 auto;
@@ -139,18 +226,17 @@
       gap: 1.5rem;
     }
     .card {
-      background: var(--card);
-      border: 1px solid rgba(0,0,0,0.02);
+      background: var(--card-bg);
       border-radius: 1rem;
-      padding: 1.25rem 1.25rem 1rem;
-      box-shadow: 0 18px 55px rgba(15,115,255,0.04);
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(15,115,255,0.05);
+      border: 1px solid rgba(15,115,255,0.08);
     }
     h2 {
-      margin-top: 0;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      font-size: 1.25rem;
+      color: var(--blue-dark);
+      border-left: 4px solid var(--blue);
+      padding-left: .5rem;
+      margin-bottom: .5rem;
     }
     .flex-2col {
       display: grid;
@@ -164,19 +250,17 @@
     }
     footer {
       text-align: center;
-      padding: 1rem 0 2rem;
-      font-size: .8rem;
-      color: #6b7280;
+      background: var(--blue-dark);
+      color: #fff;
+      padding: 2rem 1rem;
+      font-size: .85rem;
     }
+
     @media (max-width: 900px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-      .flex-2col {
-        grid-template-columns: 1fr;
-      }
       nav { display: none; }
-      .hero-image { min-height: 200px; }
+      .menu-toggle { display: flex; }
+      .hero { grid-template-columns: 1fr; }
+      .flex-2col { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -194,6 +278,15 @@
         <a href="#album">写真アルバム</a>
         <a href="#contact">入会案内</a>
       </nav>
+      <button class="menu-toggle" id="menuButton">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="#about">クラブ紹介</a>
+      <a href="#facebook">Facebook</a>
+      <a href="#album">写真アルバム</a>
+      <a href="#contact">入会案内</a>
     </div>
   </header>
 
@@ -219,7 +312,6 @@
 
   <!-- メイン -->
   <main>
-    <!-- クラブ紹介 -->
     <section id="about" class="card">
       <h2>🏐 クラブ紹介</h2>
       <p>比々多ジュニアバレーボールクラブは、伊勢原市比々多地区を中心に活動している小学生チームです。バレーボールの楽しさを第一に、あいさつ・協力・挑戦を大切にしています。</p>
@@ -232,9 +324,7 @@
       </ul>
     </section>
 
-    <!-- Facebook & アルバム 2カラム -->
     <section class="flex-2col">
-      <!-- Facebook -->
       <div id="facebook" class="card">
         <h2>📢 最新情報（Facebook）</h2>
         <p style="margin-top:0.2rem;margin-bottom:1rem;font-size:.9rem;color:#6b7280;">
@@ -250,7 +340,6 @@
         </iframe>
       </div>
 
-      <!-- 写真アルバム -->
       <div id="album" class="card">
         <h2>📸 写真アルバム</h2>
         <p style="margin-top:0.2rem;margin-bottom:1rem;font-size:.9rem;color:#6b7280;">
@@ -265,7 +354,6 @@
       </div>
     </section>
 
-    <!-- 入会案内 -->
     <section id="contact" class="card">
       <h2>✉️ 入会・体験のお申し込み</h2>
       <p>体験・見学は随時受付中です。下記フォームから送信いただくか、Facebookページのメッセージからお問い合わせください。</p>
@@ -281,5 +369,14 @@
   <footer>
     &copy; 2025 比々多ジュニアバレーボールクラブ / hibita-jvc.github.io
   </footer>
+
+  <script>
+    const menuButton = document.getElementById('menuButton');
+    const mobileNav = document.getElementById('mobileNav');
+    menuButton.addEventListener('click', () => {
+      mobileNav.classList.toggle('show');
+      menuButton.classList.toggle('open');
+    });
+  </script>
 </body>
 </html>
