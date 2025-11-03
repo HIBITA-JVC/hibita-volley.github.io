@@ -313,7 +313,6 @@ img, iframe { max-width: 100%; display: block; }
     // モバイルや低性能環境では無効化
     const disable = window.matchMedia('(max-width: 950px)').matches ||
                     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                    || true;
     if (disable) return;
 
     let ticking = false;
