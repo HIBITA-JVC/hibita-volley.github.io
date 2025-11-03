@@ -147,147 +147,121 @@
       .hero{grid-template-columns:1fr}
       .flex-2col{grid-template-columns:1fr}
     }
-    /* ===== ハンバーガーメニュー 上級エフェクト付き ===== */
-.menu-toggle {
-  display:none;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  width:42px;height:34px;
-  border:none;
-  background:linear-gradient(145deg,rgba(255,255,255,0.45),rgba(255,255,255,0.15));
-  border-radius:10px;
-  backdrop-filter:blur(8px);
-  box-shadow:inset 0 1px 1px rgba(255,255,255,0.3), 0 4px 12px rgba(0,0,0,0.15);
-  cursor:pointer;
-  transition:all .3s ease;
-  position:relative;
-  z-index:110;
-}
-.menu-toggle span {
-  width:22px;height:2.3px;
-  background:var(--blue-dark);
-  margin:3px 0;
-  border-radius:2px;
-  transition:all .3s ease;
-}
-.menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.menu-toggle.open span:nth-child(2){opacity:0;}
-.menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.menu-toggle:hover{background:linear-gradient(145deg,rgba(255,255,255,0.6),rgba(255,255,255,0.25));}
 
-/* モバイルナビ本体 */
-.mobile-nav {
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(18px) saturate(180%);
-  -webkit-backdrop-filter:blur(18px) saturate(180%);
-  position:fixed;
-  top:60px;right:20px;
-  border-radius:16px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.25);
-  padding:1rem 1.2rem;
-  z-index:120;
-  animation:fadeUp .35s ease forwards;
-}
-.mobile-nav a {
-  text-decoration:none;
-  color:var(--blue-dark);
-  padding:.8rem 0;
-  font-weight:700;
-  font-size:1.05rem;
-  letter-spacing:.02em;
-  width:100%;
-  text-align:center;
-  border-radius:8px;
-  transition:background .25s;
-}
-.mobile-nav a:hover {
-  background:linear-gradient(90deg,rgba(15,115,255,0.15),rgba(50,165,255,0.15));
-}
-.mobile-nav.show { display:flex; }
+    /* ===== ハンバーガーメニュー（上級） ===== */
+    .menu-toggle {
+      display:none;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      width:42px;height:34px;
+      border:none;
+      background:linear-gradient(145deg,rgba(255,255,255,0.45),rgba(255,255,255,0.15));
+      border-radius:10px;
+      backdrop-filter:blur(8px);
+      box-shadow:inset 0 1px 1px rgba(255,255,255,0.3), 0 4px 12px rgba(0,0,0,0.15);
+      cursor:pointer;
+      transition:all .3s ease;
+      position:relative;
+      z-index:1101; /* ← ここ上げる */
+    }
+    .menu-toggle span {
+      width:22px;height:2.3px;
+      background:var(--blue-dark);
+      margin:3px 0;
+      border-radius:2px;
+      transition:all .3s ease;
+    }
+    .menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .menu-toggle.open span:nth-child(2){opacity:0;}
+    .menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .menu-toggle:hover{background:linear-gradient(145deg,rgba(255,255,255,0.6),rgba(255,255,255,0.25));}
 
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(-8px) scale(0.96);}
-  to { opacity:1; transform:translateY(0) scale(1);}
-}
+    .mobile-nav {
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      background:rgba(255,255,255,0.7);
+      backdrop-filter:blur(18px) saturate(180%);
+      -webkit-backdrop-filter:blur(18px) saturate(180%);
+      position:fixed;
+      top:60px;right:20px;
+      border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.25);
+      padding:1rem 1.2rem;
+      z-index:1100; /* ← 前面に */
+      animation:fadeUp .35s ease forwards;
+    }
+    .mobile-nav a {
+      text-decoration:none;
+      color:var(--blue-dark);
+      padding:.8rem 0;
+      font-weight:700;
+      font-size:1.05rem;
+      letter-spacing:.02em;
+      width:100%;
+      text-align:center;
+      border-radius:8px;
+      transition:background .25s;
+    }
+    .mobile-nav a:hover {
+      background:linear-gradient(90deg,rgba(15,115,255,0.15),rgba(50,165,255,0.15));
+    }
+    .mobile-nav.show { display:flex; }
 
-/* 背景オーバーレイ（暗くぼかす） */
-.nav-overlay {
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(5,15,35,0.25);
-  backdrop-filter:blur(6px);
-  z-index:100;
-  opacity:0;
-  transition:opacity .4s ease;
-}
-.nav-overlay.show {
-  display:block;
-  opacity:1;
-}
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(-8px) scale(0.96);}
+      to { opacity:1; transform:translateY(0) scale(1);}
+    }
 
-/* レスポンシブ切替 */
-@media(max-width:950px){
-  nav{display:none;}
-  .menu-toggle{display:flex;}
-}
+    .nav-overlay {
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(5,15,35,0.25);
+      backdrop-filter:blur(6px);
+      z-index:1000; /* ← 前面に */
+      opacity:0;
+      transition:opacity .35s ease;
+    }
+    .nav-overlay.show { display:block; opacity:1; }
+
+    @media(max-width:950px){
+      nav{display:none;}
+      .menu-toggle{display:flex;}
+    }
   </style>
 </head>
-<script>
-  // ハンバーガー上級版
-  const menuButton = document.getElementById('menuButton');
-  const mobileNav = document.getElementById('mobileNav');
-  const navOverlay = document.getElementById('navOverlay');
 
-  if (menuButton && mobileNav && navOverlay) {
-    menuButton.addEventListener('click', () => {
-      const isOpen = mobileNav.classList.toggle('show');
-      menuButton.classList.toggle('open', isOpen);
-      navOverlay.classList.toggle('show', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : ''; // スクロール固定
-    });
-
-    navOverlay.addEventListener('click', () => {
-      mobileNav.classList.remove('show');
-      menuButton.classList.remove('open');
-      navOverlay.classList.remove('show');
-      document.body.style.overflow = '';
-    });
-  }
-</script>
 <body>
   <header class="site-header">
-  <div class="nav-container">
-    <div class="logo">
-      <div class="logo-circle">🏐</div>
-      比々多ジュニアバレーボールクラブ
+    <div class="nav-container">
+      <div class="logo">
+        <div class="logo-circle">🏐</div>
+        比々多ジュニアバレーボールクラブ
+      </div>
+
+      <button id="menuButton" class="menu-toggle" aria-label="メニューを開く" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav>
+        <a href="#about">クラブ紹介</a>
+        <a href="#facebook">Facebook</a>
+        <a href="#album">写真アルバム</a>
+        <a href="#contact">入会案内</a>
+      </nav>
     </div>
 
-    <button id="menuButton" class="menu-toggle" aria-label="メニューを開く">
-      <span></span><span></span><span></span>
-    </button>
-
-    <nav>
+    <!-- モバイルナビと背景ぼかし -->
+    <div id="navOverlay" class="nav-overlay"></div>
+    <div id="mobileNav" class="mobile-nav">
       <a href="#about">クラブ紹介</a>
       <a href="#facebook">Facebook</a>
       <a href="#album">写真アルバム</a>
       <a href="#contact">入会案内</a>
-    </nav>
-  </div>
-
-  <!-- モバイルナビと背景ぼかし -->
-  <div id="navOverlay" class="nav-overlay"></div>
-  <div id="mobileNav" class="mobile-nav">
-    <a href="#about">クラブ紹介</a>
-    <a href="#facebook">Facebook</a>
-    <a href="#album">写真アルバム</a>
-    <a href="#contact">入会案内</a>
-  </div>
-</header>
+    </div>
+  </header>
 
   <div class="hero-shell">
     <section class="hero">
@@ -329,7 +303,7 @@
 
     <section class="spirit reveal">
       <blockquote>
-        <p>心で繋げ<br></p>
+        <p>心で繋げ。<br></p>
       </blockquote>
     </section>
 
@@ -397,6 +371,34 @@
       };
       window.addEventListener('scroll',onScroll,{passive:true});
       onScroll();
+    })();
+
+    // ===== ハンバーガー（要素生成後に実行） =====
+    (()=>{
+      const menuButton = document.getElementById('menuButton');
+      const mobileNav  = document.getElementById('mobileNav');
+      const navOverlay = document.getElementById('navOverlay');
+      if(!menuButton || !mobileNav || !navOverlay) return;
+
+      const closeMenu = ()=>{
+        mobileNav.classList.remove('show');
+        navOverlay.classList.remove('show');
+        menuButton.classList.remove('open');
+        menuButton.setAttribute('aria-expanded','false');
+        document.body.style.overflow = '';
+      };
+      const toggleMenu = ()=>{
+        const isOpen = mobileNav.classList.toggle('show');
+        navOverlay.classList.toggle('show', isOpen);
+        menuButton.classList.toggle('open', isOpen);
+        menuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      };
+
+      menuButton.addEventListener('click', toggleMenu);
+      navOverlay.addEventListener('click', closeMenu);
+      // メニュー内リンクを押したら閉じる
+      mobileNav.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeMenu));
     })();
   </script>
 </body>
