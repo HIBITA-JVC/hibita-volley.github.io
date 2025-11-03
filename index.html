@@ -147,21 +147,147 @@
       .hero{grid-template-columns:1fr}
       .flex-2col{grid-template-columns:1fr}
     }
+    /* ===== ハンバーガーメニュー 上級エフェクト付き ===== */
+.menu-toggle {
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  width:42px;height:34px;
+  border:none;
+  background:linear-gradient(145deg,rgba(255,255,255,0.45),rgba(255,255,255,0.15));
+  border-radius:10px;
+  backdrop-filter:blur(8px);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,0.3), 0 4px 12px rgba(0,0,0,0.15);
+  cursor:pointer;
+  transition:all .3s ease;
+  position:relative;
+  z-index:110;
+}
+.menu-toggle span {
+  width:22px;height:2.3px;
+  background:var(--blue-dark);
+  margin:3px 0;
+  border-radius:2px;
+  transition:all .3s ease;
+}
+.menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.menu-toggle.open span:nth-child(2){opacity:0;}
+.menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.menu-toggle:hover{background:linear-gradient(145deg,rgba(255,255,255,0.6),rgba(255,255,255,0.25));}
+
+/* モバイルナビ本体 */
+.mobile-nav {
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  background:rgba(255,255,255,0.7);
+  backdrop-filter:blur(18px) saturate(180%);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);
+  position:fixed;
+  top:60px;right:20px;
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  padding:1rem 1.2rem;
+  z-index:120;
+  animation:fadeUp .35s ease forwards;
+}
+.mobile-nav a {
+  text-decoration:none;
+  color:var(--blue-dark);
+  padding:.8rem 0;
+  font-weight:700;
+  font-size:1.05rem;
+  letter-spacing:.02em;
+  width:100%;
+  text-align:center;
+  border-radius:8px;
+  transition:background .25s;
+}
+.mobile-nav a:hover {
+  background:linear-gradient(90deg,rgba(15,115,255,0.15),rgba(50,165,255,0.15));
+}
+.mobile-nav.show { display:flex; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(-8px) scale(0.96);}
+  to { opacity:1; transform:translateY(0) scale(1);}
+}
+
+/* 背景オーバーレイ（暗くぼかす） */
+.nav-overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(5,15,35,0.25);
+  backdrop-filter:blur(6px);
+  z-index:100;
+  opacity:0;
+  transition:opacity .4s ease;
+}
+.nav-overlay.show {
+  display:block;
+  opacity:1;
+}
+
+/* レスポンシブ切替 */
+@media(max-width:950px){
+  nav{display:none;}
+  .menu-toggle{display:flex;}
+}
   </style>
 </head>
+<script>
+  // ハンバーガー上級版
+  const menuButton = document.getElementById('menuButton');
+  const mobileNav = document.getElementById('mobileNav');
+  const navOverlay = document.getElementById('navOverlay');
 
+  if (menuButton && mobileNav && navOverlay) {
+    menuButton.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('show');
+      menuButton.classList.toggle('open', isOpen);
+      navOverlay.classList.toggle('show', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : ''; // スクロール固定
+    });
+
+    navOverlay.addEventListener('click', () => {
+      mobileNav.classList.remove('show');
+      menuButton.classList.remove('open');
+      navOverlay.classList.remove('show');
+      document.body.style.overflow = '';
+    });
+  }
+</script>
 <body>
   <header class="site-header">
-    <div class="nav-container">
-      <div class="logo"><div class="logo-circle">Jr</div>比々多ジュニアバレーボール</div>
-      <nav>
-        <a href="#about">クラブ紹介</a>
-        <a href="#facebook">Facebook</a>
-        <a href="#album">写真アルバム</a>
-        <a href="#contact">入会案内</a>
-      </nav>
+  <div class="nav-container">
+    <div class="logo">
+      <div class="logo-circle">Jr</div>
+      比々多ジュニアバレーボール
     </div>
-  </header>
+
+    <button id="menuButton" class="menu-toggle" aria-label="メニューを開く">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav>
+      <a href="#about">クラブ紹介</a>
+      <a href="#facebook">Facebook</a>
+      <a href="#album">写真アルバム</a>
+      <a href="#contact">入会案内</a>
+    </nav>
+  </div>
+
+  <!-- モバイルナビと背景ぼかし -->
+  <div id="navOverlay" class="nav-overlay"></div>
+  <div id="mobileNav" class="mobile-nav">
+    <a href="#about">クラブ紹介</a>
+    <a href="#facebook">Facebook</a>
+    <a href="#album">写真アルバム</a>
+    <a href="#contact">入会案内</a>
+  </div>
+</header>
 
   <div class="hero-shell">
     <section class="hero">
