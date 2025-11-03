@@ -127,6 +127,35 @@ html, body { overflow-x: hidden; }
 
 /* 画像・iframeのはみ出し保険 */
 img, iframe { display: block; max-width: 100%; }
+/* === 右端が欠ける対策（クリップを解除） === */
+
+/* ヒーローはシャドウや反射が外側に出るので隠さない */
+.hero-shell { overflow: visible !important; }
+
+/* カードの外側に出るシャドウ/子要素も隠さない */
+.card { overflow: visible !important; }
+
+/* クリップを強める要因だった contain: paint を解除 */
+.hero-shell,
+.hero-shell::before,
+.hero-shell::after,
+.hero-shell .shine {
+  contain: initial !important;   /* or 'unset' */
+}
+
+/* 画像やFacebook iframeが1pxだけ溢れても横スクロールは出さず、内容は見切らない */
+img, iframe { max-width: 100%; display: block; }
+
+/* iOSのセーフエリアで右端が窮屈になる場合の保険（効かない環境では無害） */
+@supports (padding: max(0px)) {
+  .nav-container,
+  .hero-shell,
+  main,
+  footer {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
   </style>
 </head>
 
