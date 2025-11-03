@@ -29,7 +29,7 @@
     nav a:hover::after{width:100%}
 
     /* Hero */
-    .hero-shell{position:relative;overflow:hidden;max-width:1100px;margin:1.5rem auto;padding:0 1rem;border-radius:1.2rem}
+    .hero-shell{position:relative;max-width:1100px;margin:1.5rem auto;padding:0 1rem;border-radius:1.2rem}
     .hero-shell::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 50%, rgba(15,115,255,0.35), transparent 68%);animation:breathe 6s ease-in-out infinite alternate;mix-blend-mode:overlay;pointer-events:none}
     .hero-shell::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0.12) 28%,rgba(255,255,255,0) 62%);background-size:220% 220%;animation:shimmerMove 6s ease-in-out infinite;mix-blend-mode:soft-light;pointer-events:none}
     @keyframes breathe{from{transform:scale(1);opacity:.8}to{transform:scale(1.22);opacity:1}}
