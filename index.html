@@ -316,14 +316,23 @@
           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
       </div>
 
-      <div id="album" class="card reveal">
-        <h2 class="section-title">📸 写真アルバム</h2>
-        <iframe src="https://publicalbum.org/blog/your-google-photos-embed-url"
-          style="height:600px;width:100%;border:none;border-radius:.6rem"
-          loading="lazy" allowfullscreen></iframe>
-      </div>
-    </section>
+      <!-- 活動の様子 -->
+<section id="activity" class="card reveal">
+  <h2 class="section-title">🎞 活動の様子</h2>
+  <p style="margin-bottom:1rem;color:#6b7280;font-size:.95rem;">
+    練習・大会・イベントなど、比々多ジュニアの活動風景を紹介します。
+  </p>
+</section>
 
+  <div class="slideshow-container">
+    <div class="slide fade"><img src="images/photo1.jpg" alt="練習風景1"></div>
+    <div class="slide fade"><img src="images/photo2.jpg" alt="練習風景2"></div>
+    <div class="slide fade"><img src="images/photo3.jpg" alt="大会の様子"></div>
+    <div class="slide fade"><img src="images/photo4.jpg" alt="イベント風景"></div>
+    <div class="slide fade"><img src="images/photo5.jpg" alt="チーム集合写真"></div>
+  </div>
+</section>
+    
   <section id="contact" class="card reveal">
   <h2 class="section-title">✉️ 入会・体験のお申し込み</h2>
   <p>見学・体験をご希望の方は、以下のメールボタンから<strong>「お子さまのお名前・学年・希望日」</strong>をご連絡ください。</p>
@@ -441,6 +450,56 @@
         sel.addRange(range);
       }
     });
+  })();
+  /* ==== 活動スライドショー ==== */
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 380px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(15,115,255,0.1);
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.slide.active { opacity: 1; }
+
+/* ホバーで一時停止 */
+.slideshow-container:hover img {
+  filter: brightness(0.95);
+}
+    </script>
+  <script>
+  // 活動スライドショー
+  (() => {
+    const slides = document.querySelectorAll('.slide');
+    if (!slides.length) return;
+    let idx = 0;
+    slides[idx].classList.add('active');
+
+    let timer = setInterval(nextSlide, 4000);
+    function nextSlide() {
+      slides[idx].classList.remove('active');
+      idx = (idx + 1) % slides.length;
+      slides[idx].classList.add('active');
+    }
+
+    // ホバーで一時停止（PCのみ）
+    const box = document.querySelector('.slideshow-container');
+    if (box) {
+      box.addEventListener('mouseenter', () => clearInterval(timer));
+      box.addEventListener('mouseleave', () => (timer = setInterval(nextSlide, 4000)));
+    }
   })();
 </script>
 </body>
