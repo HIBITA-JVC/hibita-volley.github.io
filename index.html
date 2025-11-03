@@ -17,9 +17,29 @@
 
     body {
       font-family: "Noto Sans JP", "Hiragino Sans", system-ui, sans-serif;
-      background: linear-gradient(to bottom right, var(--blue-light), #ffffff);
       color: var(--text);
       line-height: 1.7;
+      background: linear-gradient(to bottom right, var(--blue-light), #ffffff);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 🌊 背景の青い波アニメーション */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 20% 30%, rgba(15,115,255,0.08), transparent 70%),
+                  radial-gradient(circle at 80% 70%, rgba(15,115,255,0.1), transparent 70%),
+                  radial-gradient(circle at 40% 90%, rgba(0,140,255,0.06), transparent 80%);
+      animation: waveMove 20s linear infinite alternate;
+      z-index: -1;
+    }
+    @keyframes waveMove {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(-10%, -5%) scale(1.1); }
     }
 
     /* ==== ヘッダー ==== */
@@ -73,11 +93,9 @@
       transition: color 0.2s;
     }
 
-    nav a:hover {
-      color: var(--blue);
-    }
+    nav a:hover { color: var(--blue); }
 
-    /* ==== ハンバーガーボタン ==== */
+    /* ==== ハンバーガー ==== */
     .menu-toggle {
       display: none;
       flex-direction: column;
@@ -89,9 +107,7 @@
       border: none;
       cursor: pointer;
       position: relative;
-      transition: background 0.3s;
     }
-
     .menu-toggle span {
       position: absolute;
       height: 3px;
@@ -101,22 +117,13 @@
       border-radius: 2px;
       transition: all 0.4s ease;
     }
-
     .menu-toggle span:nth-child(1) { top: 9px; }
     .menu-toggle span:nth-child(2) { top: 15px; }
     .menu-toggle span:nth-child(3) { top: 21px; }
-
-    .menu-toggle.open span:nth-child(1) {
-      transform: rotate(45deg);
-      top: 15px;
-    }
+    .menu-toggle.open span:nth-child(1) { transform: rotate(45deg); top: 15px; }
     .menu-toggle.open span:nth-child(2) { opacity: 0; }
-    .menu-toggle.open span:nth-child(3) {
-      transform: rotate(-45deg);
-      top: 15px;
-    }
+    .menu-toggle.open span:nth-child(3) { transform: rotate(-45deg); top: 15px; }
 
-    /* ==== モバイルメニュー ==== */
     .mobile-nav {
       display: none;
       flex-direction: column;
@@ -140,9 +147,7 @@
       width: 100%;
       text-align: center;
     }
-    .mobile-nav a:hover {
-      background: var(--blue-light);
-    }
+    .mobile-nav a:hover { background: var(--blue-light); }
 
     /* ==== ヒーロー ==== */
     .hero {
@@ -163,11 +168,8 @@
       margin-bottom: 1.1rem;
       line-height: 1.6;
     }
-    .hero-buttons {
-      display: flex;
-      gap: .75rem;
-      flex-wrap: wrap;
-    }
+    .hero-buttons { display: flex; gap: .75rem; flex-wrap: wrap; }
+
     .btn-primary {
       background: var(--blue);
       color: #fff;
@@ -177,9 +179,8 @@
       font-weight: 600;
       text-decoration: none;
     }
-    .btn-primary:hover {
-      background: var(--blue-dark);
-    }
+    .btn-primary:hover { background: var(--blue-dark); }
+
     .btn-secondary {
       background: rgba(15,115,255,0.1);
       color: var(--blue);
@@ -197,24 +198,37 @@
       overflow: hidden;
       display: grid;
       place-items: center;
-      color: #fff;
       text-align: center;
     }
     .hero-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      opacity: 0.4;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    .hero-image h2 {
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .hero-image p {
+      color: #f0f8ff;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.5);
     }
     .hero-badge {
       position: absolute;
       top: .8rem;
       right: .8rem;
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,.3);
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,.4);
       border-radius: .75rem;
       padding: .4rem .7rem;
       font-size: .7rem;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
 
     /* ==== メイン ==== */
@@ -265,7 +279,6 @@
   </style>
 </head>
 <body>
-  <!-- ヘッダー -->
   <header class="site-header">
     <div class="nav-container">
       <div class="logo">
@@ -278,9 +291,7 @@
         <a href="#album">写真アルバム</a>
         <a href="#contact">入会案内</a>
       </nav>
-      <button class="menu-toggle" id="menuButton">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="menu-toggle" id="menuButton"><span></span><span></span><span></span></button>
     </div>
     <div class="mobile-nav" id="mobileNav">
       <a href="#about">クラブ紹介</a>
@@ -290,7 +301,6 @@
     </div>
   </header>
 
-  <!-- ヒーロー -->
   <section class="hero">
     <div class="hero-text">
       <h1>「心で繋げ」<br>比々多ジュニアバレーボールクラブ</h1>
@@ -303,14 +313,13 @@
     <div class="hero-image">
       <img src="無題502_20250923182937.png" alt="比々多ジュニアバレーボールクラブの活動写真">
       <div>
-        <h2 style="margin-bottom:.3rem;">練習日：火・木・土・日(祝)</h2>
-        <p style="margin:0;font-size:.9rem;">比々多小学校・大山小学校 体育館ほか</p>
+        <h2>練習日：火・木・土・日(祝)</h2>
+        <p>比々多小学校・大山小学校 体育館ほか</p>
       </div>
       <div class="hero-badge">新メンバー募集中！</div>
     </div>
   </section>
 
-  <!-- メイン -->
   <main>
     <section id="about" class="card">
       <h2>🏐 クラブ紹介</h2>
