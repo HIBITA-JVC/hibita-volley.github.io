@@ -257,20 +257,21 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
 .back-to-top svg{ width:22px; height:22px; fill: var(--blue-dark); }
 
 /* 7) reveal の個別遅延（data-delayで制御） */
-.reveal[data-delay]{ transition-delay: var(--rv-delay, 0s); }
-  /* ==== 背景シルエット（固定・薄め・モーション） ==== */
+.reveal[data-delay]{ transition-delay: var(--rv-delay, 
+  /* ==== 背景シルエット（見える強度・安全位置・前面化） ==== */
 .bg-figures {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;                 /* 背景層 */
+  z-index: 0; /* 背景より前、本文より後ろ */
   overflow: hidden;
 }
 
 .bg-figures svg {
   position: absolute;
-  opacity: 0.06;              /* 透明度：お好みで 0.04〜0.10 */
-  filter: blur(0.2px);        /* エッジをほんの少し柔らかく */
+  opacity: 0.12;                         /* ← まず見える強さに */
+  mix-blend-mode: multiply;              /* 背景に自然に馴染む */
+  filter: drop-shadow(0 6px 12px rgba(15,115,255,.18));
   transform-origin: center;
   will-change: transform, opacity;
   animation: floatY 14s ease-in-out infinite;
@@ -278,41 +279,31 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
 
 @keyframes floatY {
   0%   { transform: translateY(0) rotate(0deg); }
-  50%  { transform: translateY(-14px) rotate(0.8deg); }
+  50%  { transform: translateY(-10px) rotate(.6deg); }
   100% { transform: translateY(0) rotate(0deg); }
 }
 
-/* スパイク（右下大きめ） */
-.bg-figures .spiker {
-  right: -6vw; bottom: -4vh;
-  width: min(42vw, 560px);
-  animation-delay: 0.4s;
-}
+/* 位置を “画面内” に寄せる（まずは確実に見せる） */
+.bg-figures .spiker   { right: 2vw;  bottom: 3vh; width: min(36vw, 480px);  animation-delay: .3s; }
+.bg-figures .receiver { left:  2vw;  top:    6vh; width: min(30vw, 420px);  opacity: .10; animation-duration: 18s; }
+.bg-figures .trail    { left: 10vw;  top:   45vh; width: 70vw; height: auto; opacity: .10; animation-duration: 22s; }
 
-/* レシーブ（左上薄め） */
-.bg-figures .receiver {
-  left: -8vw; top: -6vh;
-  width: min(36vw, 500px);
-  opacity: 0.045;
-  animation-duration: 18s;
-}
-
-/* 中央奥にボール軌跡（グラデライン） */
-.bg-figures .trail {
-  left: 10vw; top: 28vh;
-  width: 70vw; height: auto;
-  opacity: 0.07;
-  animation-duration: 22s;
-}
-
-/* 本文レイヤーを前面へ（念のため） */
+/* 本文を前面（重なり順を明示） */
 .site-header, .hero-shell, main, footer { position: relative; z-index: 1; }
 
-/* 動きが苦手な人向け・省電力端末はアニメ無効 */
+/* 低スペック / 動き苦手な環境では無効化 */
 @media (prefers-reduced-motion: reduce) {
   .bg-figures svg { animation: none; }
 }
-  </style>
+
+/* ──デバッグ用（見えない時に一時ON。確認できたら削除）── */
+/*
+.bg-figures { outline: 2px dashed red; background: rgba(0,0,0,.02); }
+.bg-figures .spiker   { outline: 1px solid #09f; }
+.bg-figures .receiver { outline: 1px solid #0c6; }
+.bg-figures .trail    { outline: 1px solid #f80; }
+*/
+</style>
 </head>
 
 <body>
