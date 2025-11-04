@@ -258,6 +258,60 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
 
 /* 7) reveal の個別遅延（data-delayで制御） */
 .reveal[data-delay]{ transition-delay: var(--rv-delay, 0s); }
+  /* ==== 背景シルエット（固定・薄め・モーション） ==== */
+.bg-figures {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;                 /* 背景層 */
+  overflow: hidden;
+}
+
+.bg-figures svg {
+  position: absolute;
+  opacity: 0.06;              /* 透明度：お好みで 0.04〜0.10 */
+  filter: blur(0.2px);        /* エッジをほんの少し柔らかく */
+  transform-origin: center;
+  will-change: transform, opacity;
+  animation: floatY 14s ease-in-out infinite;
+}
+
+@keyframes floatY {
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(-14px) rotate(0.8deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* スパイク（右下大きめ） */
+.bg-figures .spiker {
+  right: -6vw; bottom: -4vh;
+  width: min(42vw, 560px);
+  animation-delay: 0.4s;
+}
+
+/* レシーブ（左上薄め） */
+.bg-figures .receiver {
+  left: -8vw; top: -6vh;
+  width: min(36vw, 500px);
+  opacity: 0.045;
+  animation-duration: 18s;
+}
+
+/* 中央奥にボール軌跡（グラデライン） */
+.bg-figures .trail {
+  left: 10vw; top: 28vh;
+  width: 70vw; height: auto;
+  opacity: 0.07;
+  animation-duration: 22s;
+}
+
+/* 本文レイヤーを前面へ（念のため） */
+.site-header, .hero-shell, main, footer { position: relative; z-index: 1; }
+
+/* 動きが苦手な人向け・省電力端末はアニメ無効 */
+@media (prefers-reduced-motion: reduce) {
+  .bg-figures svg { animation: none; }
+}
   </style>
 </head>
 
@@ -472,5 +526,77 @@ document.querySelectorAll('.reveal[data-delay]').forEach(el=>{
   btn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
 })();
   </script>
+  <!-- ==== 背景シルエット（ページ全体） ==== -->
+<div class="bg-figures" aria-hidden="true">
+  <!-- スパイカー（右下） -->
+  <svg class="spiker" viewBox="0 0 500 500" role="img">
+    <defs>
+      <linearGradient id="gSp" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="#0f73ff"/>
+        <stop offset="1" stop-color="#32a5ff"/>
+      </linearGradient>
+    </defs>
+    <!-- 人体：抽象シルエット -->
+    <g fill="url(#gSp)">
+      <!-- 頭 -->
+      <circle cx="330" cy="80" r="28"/>
+      <!-- 胴 -->
+      <path d="M300 110 L360 170 L345 220 L275 180 Z"/>
+      <!-- 右腕（振りかぶり） -->
+      <path d="M355 120 L430 80 L442 96 L370 150 Z"/>
+      <!-- 左腕（バランス） -->
+      <path d="M300 135 L250 120 L242 140 L295 160 Z"/>
+      <!-- 右脚（踏み込み） -->
+      <path d="M310 220 L350 310 L330 322 L285 240 Z"/>
+      <!-- 左脚（跳躍） -->
+      <path d="M275 195 L285 280 L265 288 L250 205 Z"/>
+      <!-- ボール -->
+      <circle cx="455" cy="35" r="16" />
+    </g>
+  </svg>
+
+  <!-- レシーバー（左上） -->
+  <svg class="receiver" viewBox="0 0 520 520" role="img">
+    <defs>
+      <linearGradient id="gRc" x1="0" x2="1" y1="0" y2="1">
+        <stop offset="0" stop-color="#0f73ff"/>
+        <stop offset="1" stop-color="#32a5ff"/>
+      </linearGradient>
+    </defs>
+    <g fill="url(#gRc)">
+      <!-- 頭 -->
+      <circle cx="120" cy="90" r="26"/>
+      <!-- 胴（前傾） -->
+      <path d="M95 120 L210 160 L195 210 L85 175 Z"/>
+      <!-- 両腕（前で組む） -->
+      <path d="M175 185 L250 195 L245 215 L170 205 Z"/>
+      <path d="M130 175 L200 190 L195 205 L125 195 Z"/>
+      <!-- 右脚（伸ばし） -->
+      <path d="M150 215 L220 260 L208 280 L140 235 Z"/>
+      <!-- 左脚（踏ん張り） -->
+      <path d="M110 210 L80 290 L60 285 L92 205 Z"/>
+    </g>
+  </svg>
+
+  <!-- ボール軌跡（中央奥の遊び心） -->
+  <svg class="trail" viewBox="0 0 1000 200">
+    <defs>
+      <linearGradient id="gt" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#32a5ff" stop-opacity="0"/>
+        <stop offset="0.2" stop-color="#32a5ff" stop-opacity="0.5"/>
+        <stop offset="0.6" stop-color="#0f73ff" stop-opacity="0.35"/>
+        <stop offset="1" stop-color="#0f73ff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <!-- ふわっとカーブ -->
+    <path d="M0,150 C180,10 420,10 620,120 S920,200 1000,70"
+          fill="none" stroke="url(#gt)" stroke-width="6"
+          stroke-linecap="round" />
+    <!-- ほんのりグロー -->
+    <path d="M0,150 C180,10 420,10 620,120 S920,200 1000,70"
+          fill="none" stroke="#32a5ff" stroke-opacity="0.12"
+          stroke-width="18" stroke-linecap="round" />
+  </svg>
+</div>
 </body>
 </html>
