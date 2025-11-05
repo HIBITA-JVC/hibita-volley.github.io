@@ -11,7 +11,7 @@
     :root{--blue:#0f73ff;--blue2:#32a5ff;--blue-dark:#073f8e;--bg:#ecf4ff;--card:rgba(255,255,255,0.92);--text:#0f172a;--shadow-lg:0 14px 45px rgba(6,81,193,0.08)}
     *{box-sizing:border-box;margin:0;padding:0}
 
-    /* ←← パッチ1：bodyのoverflow-xは外す（描画はclipで） */
+    /* 横スクロールはCSSレイヤー側で吸収 */
     html{ overflow-x: clip; }
 
     body{
@@ -21,47 +21,44 @@
       background-attachment:fixed;line-height:1.7;
     }
 
-    body::before{content:"";position:fixed;inset:0;background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2O0dOjYfwAJ3wM4p5rx/gAAAABJRU5ErkJggg==');opacity:0.3;mix-blend-mode:overlay;pointer-events:none;z-index:-1}
-body::after {
-  content:"";
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:200%;
-  height:2px;
-  background:linear-gradient(90deg,transparent,#32a5ff,transparent);
-  animation:flowline 5s linear infinite;
-  z-index:999; /* ← フッターの下に埋もれないように追加 */
-}
-@keyframes flowline {
-  to { transform: translateX(-50%); }
-}
-    #toTop {
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  width:46px;
-  height:46px;
-  border:none;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,#32a5ff,#0f73ff);
-  box-shadow:0 0 20px rgba(15,115,255,0.4);
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  transition:transform .3s, opacity .3s;
-  z-index:999;
-  opacity:0;
-  pointer-events:none;
-}
-#toTop.show {
-  opacity:1;
-  pointer-events:auto;
-}
-#toTop:hover {
-  transform:scale(1.15) rotate(8deg);
-}
-    /* Header */
+    /* 細かな紙ノイズ */
+    body::before{
+      content:"";position:fixed;inset:0;
+      background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2O0dOjYfwAJ3wM4p5rx/gAAAABJRU5ErkJggg==');
+      opacity:0.3;mix-blend-mode:overlay;pointer-events:none;z-index:-1
+    }
+
+    /* フッター下で流れる光のライン */
+    body::after{
+      content:"";position:fixed;bottom:0;left:0;width:200%;height:2px;
+      background:linear-gradient(90deg,transparent,#32a5ff,transparent);
+      animation:flowline 5s linear infinite;z-index:5
+    }
+    @keyframes flowline{to{transform:translateX(-50%)}}
+
+    /* ===== 背景ボール（固定レイヤー） ===== */
+    .bg-ball{
+      position:fixed;inset:0;pointer-events:none;z-index:0; /* 本文より後ろ */
+      overflow:hidden;
+    }
+    .bg-ball__img{
+      position:absolute;
+      width:min(90vmin, 820px); /* 画面に応じて自然にスケール */
+      aspect-ratio:1/1;
+      background:url('FFFFFBCC-5308-4149-8D13-F5AB427C1506.png') center/contain no-repeat;
+      opacity:0.16;              /* うっすら */
+      mix-blend-mode:multiply;   /* 背景になじませる */
+      filter:drop-shadow(0 18px 40px rgba(15,115,255,.12));
+      will-change:transform;
+      transform:translate3d(0,0,0);
+    }
+    /* 初期位置（右上やや外側寄りに配置） */
+    .bg-ball__img{ right:-8vw; top:8vh; }
+
+    /* 本文側を前面に */
+    .site-header, .hero-shell, main, footer, #toTop, .back-to-top{ position:relative; z-index:2; }
+
+    /* ===== Header ===== */
     header.site-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.9);backdrop-filter:blur(15px);border-bottom:1px solid rgba(15,115,255,0.08)}
     .nav-container{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:.7rem 1rem}
     .logo{display:flex;align-items:center;gap:.4rem;font-weight:700;color:var(--blue-dark)}
@@ -71,7 +68,7 @@ body::after {
     nav a::after{content:"";position:absolute;left:0;bottom:-.4rem;height:2px;width:0;background:linear-gradient(90deg,var(--blue),var(--blue2));transition:width .3s ease}
     nav a:hover::after{width:100%}
 
-    /* Hero */
+    /* ===== Hero ===== */
     .hero-shell{position:relative;max-width:1100px;margin:1.5rem auto;padding:0 1rem;border-radius:1.2rem}
     .hero-shell::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 50%, rgba(15,115,255,0.35), transparent 68%);animation:breathe 6s ease-in-out infinite alternate;mix-blend-mode:overlay;pointer-events:none}
     .hero-shell::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0.12) 28%,rgba(255,255,255,0) 62%);background-size:220% 220%;animation:shimmerMove 6s ease-in-out infinite;mix-blend-mode:soft-light;pointer-events:none}
@@ -80,7 +77,7 @@ body::after {
     .hero-shell .shine{position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 45%,rgba(255,255,255,0.7) 50%,transparent 55%);background-size:300% 300%;mix-blend-mode:soft-light;opacity:.55;animation:shineSweep 5.5s ease-in-out infinite}
     @keyframes shineSweep{0%{background-position:120% 0;opacity:.25}45%{opacity:.6}100%{background-position:-20% 100%;opacity:.25}}
 
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:1.5rem;align-items:center}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:1.5rem;align-items:center;overflow:visible}
     .hero-title{letter-spacing:.03em;line-height:1.12}
     .hero-title .sub{display:block;margin-top:.35rem;font-weight:700;font-size:clamp(1.3rem,2.6vw,2rem);color:#0d336b}
     .split .char{display:inline-block;opacity:0;transform:translateY(12px);filter:blur(3px);animation:charFloat .7s cubic-bezier(.2,.65,.3,1) forwards}
@@ -89,25 +86,21 @@ body::after {
     .hero-buttons{margin-top:1.2rem;display:flex;gap:.7rem;flex-wrap:wrap}
     .btn-primary{background:linear-gradient(135deg,var(--blue),#40b5ff);color:#fff;text-decoration:none;padding:.6rem 1.2rem;border-radius:.8rem;font-weight:600;box-shadow:0 8px 20px rgba(15,115,255,0.3)}
     .btn-secondary{background:rgba(13,68,150,0.08);color:var(--blue-dark);padding:.6rem 1.2rem;border-radius:.8rem;text-decoration:none;font-weight:600;border:1px solid rgba(13,68,150,0.15)}
-    .hero-right{display:flex;flex-direction:column;gap:.8rem}
+    .hero-right{display:flex;flex-direction:column;gap:.8rem;contain:layout paint}
     .hero-image{border-radius:1.1rem;overflow:hidden;box-shadow:0 18px 55px rgba(15,115,255,0.12)}
     .hero-image img{width:100%;height:100%;object-fit:cover}
     .practice-card{background:rgba(255,255,255,0.9);border-radius:.9rem;padding:.7rem 1rem;box-shadow:var(--shadow-lg);border:1px solid rgba(15,115,255,0.1)}
     .practice-title{font-weight:700;color:var(--blue-dark)}
     .practice-sub{font-size:.8rem;color:#627082}
 
-    /* parallaxでレイヤー化された要素のテキスト欠け対策 */
-    .hero { overflow: visible; }
-    .hero-left, .hero-right { contain: layout paint; }
-
-    /* Main */
+    /* ===== Main ===== */
     main{max-width:1100px;margin:0 auto;padding:0 1rem 3rem;display:grid;gap:1.5rem}
     .card{background:var(--card);border-radius:1rem;padding:1.5rem;box-shadow:0 10px 25px rgba(15,115,255,0.06);border:1px solid rgba(255,255,255,0.4);transition:transform .4s ease}
-    .card:hover{transform:rotateX(2deg) rotateY(-2deg)}
+    .card:hover{transform:translateY(-2px)}
     h2.section-title{position:relative;color:var(--blue-dark);margin-bottom:.6rem;padding-bottom:.3rem}
     h2.section-title::after{content:"";position:absolute;left:0;bottom:-4px;height:3px;width:0;background:linear-gradient(90deg,var(--blue),var(--blue2));border-radius:9999px;transition:.4s}
     .reveal.show h2.section-title::after{width:120px}
-    .flex-2col{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+    .flex-2col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem}
     iframe.fb{width:100%;height:600px;border:none;border-radius:.6rem}
 
     .spirit{text-align:center;padding:3rem 1rem;color:#073f8e;font-weight:600;font-style:italic;line-height:1.8}
@@ -122,10 +115,8 @@ body::after {
       .hero{grid-template-columns:1fr}
       .flex-2col{grid-template-columns:1fr}
     }
-/* --- スマホ/タブレットでは必ず1カラムに --- */
-@media (max-width: 1100px) {
-  .flex-2col { grid-template-columns: 1fr !important; }
-}
+    @media (max-width:1100px){ .flex-2col{grid-template-columns:1fr !important} }
+
     /* Hamburger */
     .menu-toggle{display:none;flex-direction:column;justify-content:center;align-items:center;width:42px;height:34px;border:none;background:linear-gradient(145deg,rgba(255,255,255,0.45),rgba(255,255,255,0.15));border-radius:10px;backdrop-filter:blur(8px);box-shadow:inset 0 1px 1px rgba(255,255,255,0.3), 0 4px 12px rgba(0,0,0,0.15);cursor:pointer;transition:all .3s ease;position:relative;z-index:1101}
     .menu-toggle span{width:22px;height:2.3px;background:var(--blue-dark);margin:3px 0;border-radius:2px;transition:all .3s ease}
@@ -142,171 +133,45 @@ body::after {
     .nav-overlay.show{display:block;opacity:1}
     @media(max-width:950px){nav{display:none}.menu-toggle{display:flex}}
 
-    /* ==== 活動スライドショー（比率固定で安定） ==== */
-    .slideshow-container{
-      position:relative;width:100%;aspect-ratio:16/9;height:auto;border-radius:1rem;overflow:hidden;
-      box-shadow:0 12px 40px rgba(15,115,255,0.1);min-height:clamp(220px,28vw,420px)
-    }
+    /* スライド（Ken Burns 風） */
+    .slideshow-container{position:relative;width:100%;aspect-ratio:16/9;height:auto;border-radius:1rem;overflow:hidden;box-shadow:0 12px 40px rgba(15,115,255,0.1);min-height:clamp(220px,28vw,420px)}
     .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out}
     .slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
     .slide.active{opacity:1}
+    .slide.active img{transform:scale(1.06);transition:transform 8s linear}
     @media (hover:hover){.slideshow-container:hover img{filter:brightness(0.95)}}
-    img{max-width:100%;height:auto}
 
-    /* --- ここから “右欠け対策” の調整 --- */
-
-    /* 既存の横ブレ・パララックス調整 */
-    @supports (scrollbar-gutter: stable) { html { scrollbar-gutter: stable both-edges; } }
-    .hero-shell,.hero-shell::before,.hero-shell::after,.hero-shell .shine{transform-origin:center center;will-change:transform}
-
-    /* ←← パッチ2：主要ブロックに1pxの保険 */
-    .hero, .card, .spirit, .flex-2col { padding-right: 1px; }
-
-    /* ←← パッチ3：モバイルではカードの3D変形を無効化 */
-    @media (hover:none){
-      .card:hover{ transform:none !important; }
-    }
-
-    /* 画像・iframeのはみ出し保険 */
+    /* 画像・iframeの保険 */
     img, iframe { display:block; max-width:100%; }
 
-    /* iOSのセーフエリア保険 */
+    /* iOS セーフエリア */
     @supports (padding: max(0px)) {
       .nav-container, .hero-shell, main, footer {
         padding-left: max(1rem, env(safe-area-inset-left));
         padding-right: max(1rem, env(safe-area-inset-right));
       }
     }
-    /* 2カラムが子要素の最小幅で突っ張らないようにする */
-.flex-2col {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) minmax(0,1fr); /* ← 1frでも縮められる */
-  gap: 1.5rem;
-}
-.card { min-width: 0; }           /* ← Grid内でのはみ出しを許可しない */
-iframe, img { max-width: 100%; }  /* 念のための保険 */
- /* === 見栄えUPパッチ === */
 
-/* 1) セクションの余白をもう少しのびやかに */
-.card { border: 1px solid rgba(15,115,255,.06); box-shadow: 0 14px 40px rgba(15,115,255,.08); }
-.card:hover{ transform: translateY(-2px); }
-
-/* 2) 情報カード（対象/場所/活動日） */
-.info-grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px,1fr));
-  gap: .8rem;
-  margin: .8rem 0 0;
-  list-style:none;
-  padding:0;
-}
-.info-grid li{
-  background: linear-gradient(180deg, #fff, rgba(255,255,255,.85));
-  border: 1px solid rgba(15,115,255,.12);
-  border-radius:.8rem;
-  padding:.9rem .9rem;
-  box-shadow: 0 8px 22px rgba(15,115,255,.06);
-}
-.info-grid li strong{ color: var(--blue-dark); }
-.info-grid li span{ font-size:1.2rem; margin-right:.3rem }
-
-/* 3) 数字で見る（KPIカード） */
-.kpi{
-  display:grid; gap:.9rem;
-  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
-  margin-top:.8rem;
-}
-.kpi .item{
-  text-align:center; padding:1.1rem .8rem; border-radius:1rem;
-  background: radial-gradient(120% 120% at 20% 0%, #fff 0%, rgba(240,248,255,.75) 100%);
-  border: 1px solid rgba(15,115,255,.12);
-  box-shadow: 0 10px 28px rgba(15,115,255,.08);
-}
-.kpi .num{ font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight:800; color:var(--blue-dark); line-height:1; }
-.kpi .cap{ color:#5f6f86; font-size:.92rem; margin-top:.35rem }
-
-/* 4) ヒーロー見出しのスキャン光を少し強めに */
-.hero-title .char{ will-change: transform, opacity; }
-.hero-shell .shine{ opacity:.65; }
-
-/* 5) スライド写真をゆるくズーム（Ken Burns 風） */
-.slide.active img{
-  transform: scale(1.06);
-  transition: transform 8s linear; /* 1枚表示中ゆっくり拡大 */
-}
-
-/* 6) スクロール誘導と「トップへ戻る」 */
-.scroll-cue{
-  display:flex; justify-content:center; margin: .6rem 0 0;
-  color:#5b75a0; font-size:.9rem; opacity:.8;
-}
-.scroll-cue::after{
-  content:"↓"; margin-left:.4rem; animation: bob 1.6s infinite ease-in-out;
-}
-@keyframes bob{ 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(4px) } }
-
-.back-to-top{
-  position:fixed; right: clamp(12px, 3vw, 24px); bottom: clamp(12px, 3vw, 24px);
-  width:44px; height:44px; border-radius:12px; border:none; cursor:pointer;
-  background:linear-gradient(145deg, rgba(255,255,255,.9), rgba(255,255,255,.7));
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px rgba(0,0,0,.15);
-  display:none; align-items:center; justify-content:center; z-index: 1200;
-}
-.back-to-top.show{ display:flex; }
-.back-to-top svg{ width:22px; height:22px; fill: var(--blue-dark); }
-
-/* 7) reveal の個別遅延（data-delayで制御） */
-.reveal[data-delay]{ transition-delay: var(--rv-delay, 
-  /* ==== 背景シルエット（見える強度・安全位置・前面化） ==== */
-.bg-figures {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0; /* 背景より前、本文より後ろ */
-  overflow: hidden;
-}
-
-.bg-figures svg {
-  position: absolute;
-  opacity: 0.12;                         /* ← まず見える強さに */
-  mix-blend-mode: multiply;              /* 背景に自然に馴染む */
-  filter: drop-shadow(0 6px 12px rgba(15,115,255,.18));
-  transform-origin: center;
-  will-change: transform, opacity;
-  animation: floatY 14s ease-in-out infinite;
-}
-
-@keyframes floatY {
-  0%   { transform: translateY(0) rotate(0deg); }
-  50%  { transform: translateY(-10px) rotate(.6deg); }
-  100% { transform: translateY(0) rotate(0deg); }
-}
-
-/* 位置を “画面内” に寄せる（まずは確実に見せる） */
-.bg-figures .spiker   { right: 2vw;  bottom: 3vh; width: min(36vw, 480px);  animation-delay: .3s; }
-.bg-figures .receiver { left:  2vw;  top:    6vh; width: min(30vw, 420px);  opacity: .10; animation-duration: 18s; }
-.bg-figures .trail    { left: 10vw;  top:   45vh; width: 70vw; height: auto; opacity: .10; animation-duration: 22s; }
-
-/* 本文を前面（重なり順を明示） */
-.site-header, .hero-shell, main, footer { position: relative; z-index: 1; }
-
-/* 低スペック / 動き苦手な環境では無効化 */
-@media (prefers-reduced-motion: reduce) {
-  .bg-figures svg { animation: none; }
-}
-
-/* ──デバッグ用（見えない時に一時ON。確認できたら削除）── */
-/*
-.bg-figures { outline: 2px dashed red; background: rgba(0,0,0,.02); }
-.bg-figures .spiker   { outline: 1px solid #09f; }
-.bg-figures .receiver { outline: 1px solid #0c6; }
-.bg-figures .trail    { outline: 1px solid #f80; }
-*/
-</style>
+    /* Back to top（既存） */
+    .back-to-top{
+      position:fixed; right: clamp(12px, 3vw, 24px); bottom: clamp(12px, 3vw, 24px);
+      width:44px; height:44px; border-radius:12px; border:none; cursor:pointer;
+      background:linear-gradient(145deg, rgba(255,255,255,.9), rgba(255,255,255,.7));
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      display:none; align-items:center; justify-content:center; z-index: 1200;
+    }
+    .back-to-top.show{ display:flex; }
+    .back-to-top svg{ width:22px; height:22px; fill: var(--blue-dark); }
+  </style>
 </head>
 
 <body>
+  <!-- 背景ボール（常時表示・固定） -->
+  <div class="bg-ball" aria-hidden="true">
+    <div class="bg-ball__img"></div>
+  </div>
+
   <header class="site-header">
     <div class="nav-container">
       <div class="logo">
@@ -381,19 +246,18 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
 
     <section class="flex-2col">
       <div id="facebook" class="card reveal">
-  <h2 class="section-title">📢 最新情報（Facebook）</h2>
-  <iframe
-    class="fb"
-    title="Facebook Page Plugin"
-    src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fhibitajvc%2F&tabs=timeline&hide_cta=false&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&width=500&height=700"
-    style="width:100%;min-width:180px;height:700px;border:none;overflow:hidden"
-    scrolling="no"
-    frameborder="0"
-    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-    allowfullscreen="true"
-    referrerpolicy="strict-origin-when-cross-origin">
-  </iframe>
-</div>
+        <h2 class="section-title">📢 最新情報（Facebook）</h2>
+        <iframe
+          class="fb"
+          title="Facebook Page Plugin"
+          src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fhibitajvc%2F&tabs=timeline&hide_cta=false&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false&width=500&height=700"
+          style="width:100%;min-width:180px;height:700px;border:none;overflow:hidden"
+          scrolling="no" frameborder="0"
+          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          allowfullscreen="true" referrerpolicy="strict-origin-when-cross-origin">
+        </iframe>
+      </div>
+
       <div id="activity" class="card reveal">
         <h2 class="section-title">🎞 活動の様子</h2>
         <p style="margin-bottom:1rem;color:#6b7280;font-size:.95rem;">
@@ -433,11 +297,16 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
       </p>
     </section>
   </main>
-<button id="backToTop" class="back-to-top" aria-label="ページ上部へ">
-  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 9.8V19h-2V9.8L6.4 13.4 5 12z"/></svg>
-</button>
+
+  <button id="backToTop" class="back-to-top" aria-label="ページ上部へ">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 9.8V19h-2V9.8L6.4 13.4 5 12z"/></svg>
+  </button>
+
   <footer>&copy; 2025 比々多ジュニアバレーボールクラブ / hibita-jvc.github.io</footer>
-  <button id="toTop" title="トップへ戻る">↑</button>
+
+  <!-- 既存の丸ボタン（未使用なら削除可） -->
+  <button id="toTop" title="トップへ戻る" style="display:none">↑</button>
+
   <script>
     // reveal
     const reveals=document.querySelectorAll('.reveal');
@@ -457,7 +326,7 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
       });
     });
 
-    // parallax（サブピクセル対策＋モバイル無効）
+    // Heroの軽いパララックス（モバイル無効）
     (() => {
       const shell = document.querySelector('.hero-shell');
       const heroImg = document.querySelector('.hero-image');
@@ -480,6 +349,31 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
       onScroll();
     })();
 
+    // 背景ボールのゆっくり追従（パララックス）
+    (() => {
+      const ball = document.querySelector('.bg-ball__img');
+      if (!ball) return;
+
+      const disable = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (disable) return;
+
+      let ticking = false;
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY || 0;
+          // ほんの少しだけ縦に追従・横は微妙に動かす
+          const ty = Math.round(y * 0.08);   // 追従率（遅め）
+          const tx = Math.round(y * -0.015); // 右上→少し左へ
+          ball.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+          ticking = false;
+        });
+      };
+      window.addEventListener('scroll', onScroll, {passive:true});
+      onScroll();
+    })();
+
     // hamburger
     (()=>{const menuButton=document.getElementById('menuButton');const mobileNav=document.getElementById('mobileNav');const navOverlay=document.getElementById('navOverlay');
       if(!menuButton||!mobileNav||!navOverlay)return;
@@ -499,95 +393,13 @@ iframe, img { max-width: 100%; }  /* 念のための保険 */
       function next(){slides[idx].classList.remove('active');idx=(idx+1)%slides.length;slides[idx].classList.add('active');}
       if(box){box.addEventListener('mouseenter',()=>clearInterval(timer));box.addEventListener('mouseleave',()=>{timer=setInterval(next,4000);});}
     })();
-    // ---- reveal の個別遅延（data-delayに秒を入れると反映）----
-document.querySelectorAll('.reveal[data-delay]').forEach(el=>{
-  el.style.setProperty('--rv-delay', el.getAttribute('data-delay'));
-});
 
-// ---- トップへ戻るボタン ----
-(()=>{
-  const btn = document.getElementById('backToTop');
-  if(!btn) return;
-  const onScroll = ()=> {
-    const y = window.scrollY || document.documentElement.scrollTop;
-    btn.classList.toggle('show', y > 600);
-  };
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-  btn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-})();
+    // Back to top
+    (()=>{const btn=document.getElementById('backToTop');if(!btn)return;
+      const onScroll=()=>{const y=window.scrollY||document.documentElement.scrollTop;btn.classList.toggle('show',y>600);};
+      window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+      btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+    })();
   </script>
-  <!-- ==== 背景シルエット（ページ全体） ==== -->
-<div class="bg-figures" aria-hidden="true">
-  <!-- スパイカー（右下） -->
-  <svg class="spiker" viewBox="0 0 500 500" role="img">
-    <defs>
-      <linearGradient id="gSp" x1="0" x2="1" y1="0" y2="1">
-        <stop offset="0" stop-color="#0f73ff"/>
-        <stop offset="1" stop-color="#32a5ff"/>
-      </linearGradient>
-    </defs>
-    <!-- 人体：抽象シルエット -->
-    <g fill="url(#gSp)">
-      <!-- 頭 -->
-      <circle cx="330" cy="80" r="28"/>
-      <!-- 胴 -->
-      <path d="M300 110 L360 170 L345 220 L275 180 Z"/>
-      <!-- 右腕（振りかぶり） -->
-      <path d="M355 120 L430 80 L442 96 L370 150 Z"/>
-      <!-- 左腕（バランス） -->
-      <path d="M300 135 L250 120 L242 140 L295 160 Z"/>
-      <!-- 右脚（踏み込み） -->
-      <path d="M310 220 L350 310 L330 322 L285 240 Z"/>
-      <!-- 左脚（跳躍） -->
-      <path d="M275 195 L285 280 L265 288 L250 205 Z"/>
-      <!-- ボール -->
-      <circle cx="455" cy="35" r="16" />
-    </g>
-  </svg>
-
-  <!-- レシーバー（左上） -->
-  <svg class="receiver" viewBox="0 0 520 520" role="img">
-    <defs>
-      <linearGradient id="gRc" x1="0" x2="1" y1="0" y2="1">
-        <stop offset="0" stop-color="#0f73ff"/>
-        <stop offset="1" stop-color="#32a5ff"/>
-      </linearGradient>
-    </defs>
-    <g fill="url(#gRc)">
-      <!-- 頭 -->
-      <circle cx="120" cy="90" r="26"/>
-      <!-- 胴（前傾） -->
-      <path d="M95 120 L210 160 L195 210 L85 175 Z"/>
-      <!-- 両腕（前で組む） -->
-      <path d="M175 185 L250 195 L245 215 L170 205 Z"/>
-      <path d="M130 175 L200 190 L195 205 L125 195 Z"/>
-      <!-- 右脚（伸ばし） -->
-      <path d="M150 215 L220 260 L208 280 L140 235 Z"/>
-      <!-- 左脚（踏ん張り） -->
-      <path d="M110 210 L80 290 L60 285 L92 205 Z"/>
-    </g>
-  </svg>
-
-  <!-- ボール軌跡（中央奥の遊び心） -->
-  <svg class="trail" viewBox="0 0 1000 200">
-    <defs>
-      <linearGradient id="gt" x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0" stop-color="#32a5ff" stop-opacity="0"/>
-        <stop offset="0.2" stop-color="#32a5ff" stop-opacity="0.5"/>
-        <stop offset="0.6" stop-color="#0f73ff" stop-opacity="0.35"/>
-        <stop offset="1" stop-color="#0f73ff" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-    <!-- ふわっとカーブ -->
-    <path d="M0,150 C180,10 420,10 620,120 S920,200 1000,70"
-          fill="none" stroke="url(#gt)" stroke-width="6"
-          stroke-linecap="round" />
-    <!-- ほんのりグロー -->
-    <path d="M0,150 C180,10 420,10 620,120 S920,200 1000,70"
-          fill="none" stroke="#32a5ff" stroke-opacity="0.12"
-          stroke-width="18" stroke-linecap="round" />
-  </svg>
-</div>
 </body>
 </html>
