@@ -163,6 +163,12 @@
     }
     .back-to-top.show{ display:flex; }
     .back-to-top svg{ width:22px; height:22px; fill: var(--blue-dark); }
+ /* Map セクション */
+.map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem;margin-top:.8rem}
+.map-card{background:var(--card);border:1px solid rgba(15,115,255,.12);border-radius:1rem;box-shadow:0 10px 28px rgba(15,115,255,.08);padding:1rem}
+.map-title{font-weight:700;color:var(--blue-dark);margin:.2rem 0 .8rem}
+.map-embed{width:100%;aspect-ratio:16/10;border:0;border-radius:.6rem}
+@media (max-width:920px){.map-grid{grid-template-columns:1fr}}
   </style>
 </head>
 
@@ -188,6 +194,7 @@
         <a href="#facebook">Facebook</a>
         <a href="#activity">活動の様子</a>
         <a href="#contact">入会案内</a>
+        <a href="#map">マップ</a>
       </nav>
     </div>
 
@@ -197,6 +204,7 @@
       <a href="#facebook">Facebook</a>
       <a href="#activity">活動の様子</a>
       <a href="#contact">入会案内</a>
+  <a href="#map">マップ</a>
     </div>
   </header>
 
@@ -296,6 +304,36 @@
         もしくは <a href="https://www.facebook.com/hibitajvc/" target="_blank" rel="noopener">Facebookページ</a> からのDMでもOKです。
       </p>
     </section>
+    <!-- ▼ 主な活動拠点（マップ） ▼ -->
+<section id="map" class="card reveal">
+  <h2 class="section-title">🗺 主な活動拠点（マップ）</h2>
+  <p style="color:#6b7280;font-size:.95rem;margin-bottom:.8rem">
+    練習・大会で利用する主な拠点です。地図はピンチイン/アウトで拡大できます。
+  </p>
+
+  <div class="map-grid">
+    <div class="map-card">
+      <div class="map-title">伊勢原市立 比々多小学校</div>
+      <iframe
+        class="map-embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps?q=%E4%BC%8A%E5%8B%A2%E5%8E%9F%E5%B8%82%E7%AB%8B%E6%AF%94%E3%80%85%E5%A4%9A%E5%B0%8F%E5%AD%A6%E6%A0%A1&output=embed">
+      </iframe>
+    </div>
+
+    <div class="map-card">
+      <div class="map-title">伊勢原市立 大山小学校</div>
+      <iframe
+        class="map-embed"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps?q=%E4%BC%8A%E5%8B%A2%E5%8E%9F%E5%B8%82%E7%AB%8B%E5%A4%A7%E5%B1%B1%E5%B0%8F%E5%AD%A6%E6%A0%A1&output=embed">
+      </iframe>
+    </div>
+  </div>
+</section>
+<!-- ▲ 主な活動拠点（マップ） ▲ -->
   </main>
 
   <button id="backToTop" class="back-to-top" aria-label="ページ上部へ">
