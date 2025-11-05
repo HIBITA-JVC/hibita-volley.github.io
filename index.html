@@ -29,13 +29,21 @@
     }
 
     /* フッター下で流れる光のライン */
-    body::after{
-      content:"";position:fixed;bottom:0;left:0;width:200%;height:2px;
-      background:linear-gradient(90deg,transparent,#32a5ff,transparent);
-      animation:flowline 5s linear infinite;z-index:5
-    }
-    @keyframes flowline{to{transform:translateX(-50%)}}
-
+    /* ← これで横はみ出しゼロ（幅は常に100vw） */
+body::after{
+  content:"";
+  position:fixed;
+  left:0; bottom:0;
+  width:100vw; height:2px;
+  background:linear-gradient(90deg,transparent,#32a5ff,transparent);
+  background-size:200% 100%;
+  background-position:0 0;
+  animation:flowline 5s linear infinite;
+  z-index:999;
+}
+@keyframes flowline{
+  to { background-position:-100% 0; }
+}
     /* ===== 背景ボール（固定レイヤー） ===== */
     .bg-ball{
       position:fixed;inset:0;pointer-events:none;z-index:0; /* 本文より後ろ */
@@ -151,7 +159,20 @@
         padding-right: max(1rem, env(safe-area-inset-right));
       }
     }
-
+/* ==== Facebook & Map の横はみ出し防止 ==== */
+.flex-2col{
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+}
+.map-grid{
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+}
+.card{ min-width: 0; }
+iframe, img{
+  display:block;
+  width:100%;
+  max-width:100%;
+}
+.map-card{ overflow:hidden; }
     /* Back to top（既存） */
     .back-to-top{
       position:fixed; right: clamp(12px, 3vw, 24px); bottom: clamp(12px, 3vw, 24px);
